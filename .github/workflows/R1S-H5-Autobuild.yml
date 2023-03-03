@@ -51,6 +51,16 @@ jobs:
           mkdir friendlywrt-h5
           cd friendlywrt-h5
           repo init -u https://github.com/friendlyarm/friendlywrt_manifests -b $BRANCH -m h5.xml --repo-url=https://github.com/friendlyarm/repo  --no-clone-bundle
+          sed -i "11s/origin/self-sd-size/g" .repo/manifests/h5.xml
+          sed -i  "16s/origin/v18061/g" .repo/manifests/h5.xml
+          sed  -i "17s/origin/v18061/g" .repo/manifests/h5.xml
+          sed  -i "25s/origin/self/g" .repo/manifests/h5.xml
+          sed  -i "25s/master/master-v18.06.1/g" .repo/manifests/h5.xml
+          sed  -i "5a  <remote name=\"v18061\" " .repo/manifests/h5.xml
+          sed  -i "6a           fetch=\".\"" .repo/manifests/h5.xml
+          sed  -i "7a revision=\"refs/heads/master-v18.06.1\" />" .repo/manifests/h5.xml
+          sed  -i "8a          <remote name=\"self\" fetch=\"https://github.com/friendlyarm\" />" .repo/manifests/h5.xml
+          sed  -i "9a           <remote name=\"self-sd-size\" fetch=\"https://github.com/skytotwo\" revision=\"refs/heads/master\"/>" .repo/manifests/h5.xml
           repo sync -c --no-clone-bundle -j$(nproc)
 
       - name: Merge Lean's OpenWrt source
@@ -77,7 +87,7 @@ jobs:
         if: always()
         run: |
           cd friendlywrt-h5/friendlywrt
-          make download -j8
+          make download -j1
           find dl -size -1024c -exec ls -l {} \;
           find dl -size -1024c -exec rm -f {} \;
           
